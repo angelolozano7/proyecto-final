@@ -228,6 +228,11 @@ def preferencias(datos):
             datos["preferencias"]["clase"]=request.form.getlist('classe')
             archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
             lista=archivo.readlines()
+            i=0
+            for elem in lista:
+                elem=str(elem).strip('\n')
+                lista[i]=elem
+                i+=1
             print(lista)
             i=0
             for elem in lista:
@@ -242,12 +247,17 @@ def preferencias(datos):
             archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='w')
             i=0
             for dic in lista:
-                if i==0:
+                if i == len(lista)-1:
+                    archivo.write('\n'+str(dic))
+                    break
+                if i!= 0 and i!= len(lista):
+                    archivo.write('\n'+str(dic))
+                    i+=1
+                elif i==0:
                     archivo.write(str(dic))
                     i+=1
-                else:
-                    archivo.write(str(dic))
-                    i+=1
+                
+               
                 
             archivo.close()
             flash("ha realizado los cambios de manera satisfactoria")
@@ -418,7 +428,7 @@ def motor(datos):
 @app.route('/preReserva/<datos>/<vuelos>',methods=['GET','POST'])
 def preReserva(datos,vuelos):
     if(request.method == 'POST'):
-        if(request.form['boton'] == 'ver mapa'):
+        if(request.form['boton'] == 'reservar'):
             return redirect(url_for('mapa',datos=datos,vuelos=vuelos))
         if(request.form['boton'] == 'hacer reserva'):
             datos=ast.literal_eval(datos)
@@ -432,16 +442,25 @@ def preReserva(datos,vuelos):
                     return render_template('hacerReserva.html',datos=datos,vuelos=sugerencia)
 @app.route('/reservando/<datos>/<vuelos>',methods=['GET','POST'])   
 def reservar(datos,vuelos):
+    global afInformation
     datos=ast.literal_eval(datos)
     vuelos=ast.literal_eval(vuelos)
-    print(vuelos)
-    print(datos)
+    #print(vuelos)
+    #print(datos)
+    mejor=[]
     if ("reservas" in datos):
-        datos["reservas"].append(vuelos["mejor"][0][1])
+        datos["reservas"]["aero"].append(vuelos["mejor"][0][0])
+        datos["reservas"]["codigo"].append(vuelos["mejor"][0][1])
+        datos["reservas"]["cSalida"].append(vuelos["mejor"][0][2])
+        datos["reservas"]["cLlegada"].append(vuelos["mejor"][0][4])
         print("final",datos)
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
         lista=archivo.readlines()
-        print(lista)
+        i=0
+        for elem in lista:
+            elem=str(elem).strip('\n')
+            lista[i]=elem
+            i+=1
         i=0
         for elem in lista:
             elem= ast.literal_eval(elem)
@@ -464,12 +483,26 @@ def reservar(datos,vuelos):
             
         archivo.close()
         flash("ha realizado la reserva  de manera satisfactoria")
+        i=0
+        while i< len(datos["reservas"]["codigo"]):
+            for vuelo in afInformation:
+                if datos["reservas"]["codigo"][i] == vuelo[1] and datos["reservas"]["aero"][i]==vuelo[0] and datos["reservas"]["cSalida"][i]==vuelo[2] and datos["reservas"]["cLlegada"][i]==vuelo[4]:
+                    
+                    mejor.append(vuelo)
+            i+=1
+        vuelos["mejor"]=mejor
+        
         return render_template('reservas.html',datos=datos,vuelos=vuelos)
     else:
-        datos["reservas"]=[vuelos["mejor"][0][1]] # en reservas solo se guarda el codigo del vuelo
+        datos["reservas"]={"aero":[vuelos["mejor"][0][0]] ,"codigo":[vuelos["mejor"][0][1]],"cSalida":[vuelos["mejor"][0][2]] ,"cLlegada":[vuelos["mejor"][0][4]]} # en reservas solo se guarda el codigo del vuelo
         print("final",datos,datos["reservas"])
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
         lista=archivo.readlines()
+        i=0
+        for elem in lista:
+            elem=str(elem).strip('\n')
+            lista[i]=elem
+            i+=1
         print(lista)
         i=0
         for elem in lista:
@@ -480,7 +513,6 @@ def reservar(datos,vuelos):
             else:
                 i+=1
         archivo.close()
-        #ingresar cada elemento de lista como una nueva linea excepto, primera que se agrega
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='w')
         i=0
         for dic in lista:
@@ -493,6 +525,14 @@ def reservar(datos,vuelos):
             
         archivo.close()
         flash("ha realizado la reserva de manera satisfactoria")
+        i=0
+        while i< len(datos["reservas"]["codigo"]):
+            for vuelo in afInformation:
+                if datos["reservas"]["codigo"][i] == vuelo[1] and datos["reservas"]["aero"][i]==vuelo[0] and datos["reservas"]["cSalida"][i]==vuelo[2] and datos["reservas"]["cLlegada"][i]==vuelo[4]:
+                    mejor.append(vuelo)
+            i+=1
+        vuelos["mejor"]=mejor
+        print("vuelos fin ",vuelos)
         return render_template('reservas.html',datos=datos,vuelos=vuelos)
 
                         
@@ -504,9 +544,24 @@ def reservar(datos,vuelos):
 
 @app.route('/historial/<datos>',methods=['GET','POST'])
 def historial(datos):
+    global afInformation
     datos=ast.literal_eval(datos)
-    return render_template('historial.html',datos=datos)
-
+    mejor=[]
+    vuelos={}
+    if ("reservas" in datos):
+        i=0
+        while i< len(datos["reservas"]["codigo"]):
+            for vuelo in afInformation:
+                if datos["reservas"]["codigo"][i] == vuelo[1] and datos["reservas"]["aero"][i]==vuelo[0] and datos["reservas"]["cSalida"][i]==vuelo[2] and datos["reservas"]["cLlegada"][i]==vuelo[4]:
+                        
+                    mejor.append(vuelo)
+            i+=1
+        vuelos["mejor"]=mejor
+        return render_template('historial.html',datos=datos,vuelos=vuelos)
+    else:
+        flash("No tiene ninguna reserva")
+        return render_template('menu.html',usuario=datos)
+        
 @app.route('/mapa/<datos>/<vuelos>',methods=['GET','POST'])
 def mapa(datos,vuelos):
     global apInformation

@@ -1,0 +1,62 @@
+	<html>
+<head>
+	<meta charset="utf-8">
+	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">-->
+	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
+</head>
+<body background="http://www.hispaviacion.es/wp-content/uploads/2015/04/K66271-03.jpg">
+	<header align="center" id="header">
+	<div align="left">
+		<img src="imagenes/logotipo.jpg" alt="logotipo de gestor de vuelos" width="50">
+	</div>
+		<font size="20" face="roman"><span> Gestor de reservas</span></font>
+	</header> 
+	{% with messages = get_flashed_messages() %}
+	         {% if messages %}
+	            <script>
+	      var messages = {{ messages | safe }};
+	      for (var i=0; i<messages.length; i++) {
+	        alert(messages[i]);
+	      }
+	    </script>
+	         {% endif %}
+	      {% endwith %}
+		<hr />
+		<br><br>
+{% block body%}
+		
+	<div align = " center" id="registro">
+	<font size="15" face="roman" ><p>Hoja de registro </p></font>
+	<form action="{{ url_for('registrar') }}" method="POST">
+		<font size="3.5" face="roman" ><label for= "nombreR"> nombre </label></font>
+			<input type="text" placeholder="escriba su nombre" name="nombreR" id="nombreR"> 
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "apellidoR"> apellido </label></font>
+			<input type="text" placeholder="escriba su apellido" name="apellidoR" id="apellidoR">
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "correoR"> correo </label></font>
+			<input type="mail" placeholder="escriba su correo" name="correoR" id="correoR">
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "loginR"> login </label></font>
+			<input type="text" placeholder="escriba su login" name="loginR" id="loginR">
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "passwordR"> password </label></font>
+			<input type="password" placeholder="escriba su password" name="passwordR" id="passwordR">
+			<br></br>
+			<input type="submit" name="boton" value="siguiente"> <br></br>
+			
+	</form>
+
+
+	</div>
+		
+
+{% endblock%}
+<footer>
+	<p>aqui ira el correo donde pueden comunicarme</p>
+	</footer>
+</body>
+	
+</body>
+</html>

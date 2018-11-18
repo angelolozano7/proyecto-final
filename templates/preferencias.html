@@ -1,0 +1,113 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">-->
+	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
+</head>
+<body background="http://www.hispaviacion.es/wp-content/uploads/2015/04/K66271-03.jpg">
+	<header align="center" id="header">
+	<div align="left">
+		<img src="imagenes/logotipo.jpg" alt="logotipo de gestor de vuelos" width="50">
+	</div>
+		<font size="20" face="roman"><span> Gestor de reservas</span></font>
+	</header> 
+		<hr />
+		<br><br>
+{% block body%}
+		
+	<h4><p>login {{datos.login}}</p></h4>
+	<div align = " center" id="preferencias">
+	<font size="10" face="roman"><p>Seleccion de preferencias </p></font>
+
+	<form action="{{ url_for('preferencias',datos=datos) }}" method="POST">
+		<font size="3.5" face="roman" ><label for= "aerolineaP"> Aereolineas preferidas </label></font>
+			<select name=aerolineaP id=aerolineaP>
+				<option value=""></option>
+				<option value="AA">AA</option>
+				<option value="TW">TW</option>
+				<option value="DL">DL</option>
+				<option value="UA">UA</option>
+				<option value="YV">YV</option>
+				<option value="CO">CO</option>
+				<option value="WN">WN</option>
+				<option value="HP">HP</option>
+				<option value="NW">NW</option>
+				<option value="US">US</option>
+				<option value="PA">PA</option>
+				<option value="QF">QF</option>
+				<option value="YX">YX</option>
+				<option value="ZK">ZK</option>
+				<option value="AD">AD</option>
+				<option value="4X">4X</option>
+				<option value="MG">MG</option>
+				<option value="FF">FF</option>
+				<option value="AS">AS</option>
+			</select>
+			
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "escalasP"> Numero de escalas </label></font>
+			<input type="text" placeholder="" name="escalasP" id="escalasP">
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "horaSalidaP"> hora de salida </label></font>
+			<input type="text" placeholder="exm: 00:00am" name="horaSalidaP" id="horaSalidaP">
+			<br></br>
+		<font size="3.5" face="roman" ><label for= "horaLlegadaP"> hora de llegada </label></font>
+			<input type="text" placeholder="exm: 0000A/0000P " name="horaLlegadaP" id="horaLlegadaP"> 
+			<br></br>
+		<font size="5" face="roman" ><label for= "comidaP"> comidas </label></font>
+		<br></br>
+			<font size="3.5" face="roman" ><label for= "snack"> snack </label></font>
+			<input type="checkbox"  name="comida" value="S" id="snack">
+			
+			<font size="3.5" face="roman" ><label for= "lunch"> lunch </label></font>
+			<input type="checkbox"  name="comida" value="L" id="lunch">
+			
+			<font size="3.5" face="roman" ><label for= "dinner"> dinner </label></font>
+			<input type="checkbox"  name="comida" value="D" id="dinner">
+			
+			<font size="3.5" face="roman" ><label for= "breakfast"> breakfast </label></font>
+			<input type="checkbox"  name="comida"  value="B" id="breakfast">
+			<font size="3.5" face="roman" ><label for= "class"> depende de la clase </label></font>
+			<input type="checkbox"  name="comida"  value="#" id="class">
+			<br></br>
+
+		<font size="5" face="roman" ><label for= "bClass"> booking class </label></font>
+		<br></br>
+			<font size="3.5" face="roman" ><label for= "f"> F </label></font>
+			<input type="checkbox"  name="classe" id="f" value="F">
+			
+			<font size="3.5" face="roman" ><label for= "a"> A </label></font>
+			<input type="checkbox"  name="classe" id="a" value="A">
+			
+			<font size="3.5" face="roman" ><label for= "y"> Y </label></font>
+			<input type="checkbox"  name="classe" id="y" value="Y">
+			
+			<font size="3.5" face="roman" ><label for= "m"> M </label></font>
+			<input type="checkbox"  name="classe" id="m" value="M">
+			<font size="3.5" face="roman" ><label for= "q"> Q </label></font>
+			<input type="checkbox"  name="classe" id="q" value="Q">
+			<br></br>
+			<font size="3.5" face="roman" ><label for= "b"> B </label></font>
+			<input type="checkbox"  name="classe" id="f" value="B">
+			<font size="3.5" face="roman" ><label for= "a"> A </label></font>
+			<input type="checkbox"  name="classe" id="a" value="A">
+			<font size="3.5" face="roman" ><label for= "h"> H </label></font>
+			<input type="checkbox"  name="classe" id="h" value="H">
+			<font size="3.5" face="roman" ><label for= "l"> L </label></font>
+			<input type="checkbox"  name="classe" id="l" value="L">		
+			<br></br>
+			<input type="submit" name="boton" value="terminar">
+			<input type="submit" name="boton" value="editar">
+	</form>
+	
+
+	</div>
+		
+
+{% endblock%}
+<footer>
+	<p>aqui ira el correo donde pueden comunicarme</p>
+	</footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">-->
+	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
+</head>
+<body background="http://www.hispaviacion.es/wp-content/uploads/2015/04/K66271-03.jpg">
+	<header align="center" id="header">
+	<div align="left">
+		<img src="imagenes/logotipo.jpg" alt="logotipo de gestor de vuelos" width="50">
+	</div>
+		<font size="20" face="roman"><span> Gestor de reservas</span></font>
+	</header> 
+	{% with messages = get_flashed_messages() %}
+	         {% if messages %}
+	            <script>
+	      var messages = {{ messages | safe }};
+	      for (var i=0; i<messages.length; i++) {
+	        alert(messages[i]);
+	      }
+	    </script>
+	         {% endif %}
+	      {% endwith %}
+		<hr />
+		<br><br>
+{% block body%}
+		
+	<h4><p>login {{usuario.login}}</p></h4>
+		<div align="center" id="preferencias">
+			<font size="8" face="roman" ><p>preferencias </p></font>
+			<table>
+				<tr>
+					<td>Aerolinea Preferida: </td>
+					<td>{{usuario.preferencias.aerolinea}}</td>
+				</tr>
+				<tr>
+					<td>Numero de escalas</td>
+					<td>{{usuario.preferencias.escalas}}</td>
+				</tr>
+				<tr>
+					<td>Hora de salida</td>
+					<td>{{usuario.preferencias.horaSalida}}</td>
+				</tr>
+				<tr>
+					<td>Hora de llegada</td>
+					<td>{{usuario.preferencias.horaLlegada}}</td>
+				</tr>
+				<tr>
+					<td>Comida</td>
+					<td>{{usuario.preferencias.comida}}</td>
+				</tr>
+				<tr>
+					<td>Clase preferida</td>
+					<td>{{usuario.preferencias.clase}}</td>
+				</tr>
+			</table>
+			<form action="{{ url_for('editarP',datos=usuario) }}" method="POST">
+				<input type="submit" name="boton" value="editar preferencias">
+			</form>
+		</div> 
+
+		<br><br>
+		<div align="center" id="historial">
+			<font size="5" face="roman" ><p>historial </p></font>
+			<form action="{{ url_for('historial',datos=usuario) }}" method="POST">
+				<input type="submit" name="boton" value="Ver historial">
+			</form>
+
+		<br><br>
+		<div align="center" id="sugerencias">
+			<font size="5" face="roman" ><p>sugerencia </p></font>
+			<form action="{{ url_for('sugerencia',datos=usuario) }}" method="POST">
+				<input type="submit" name="boton" value="Ver sugerencia">
+			</form>
+		</div>
+		<hr />
+		<h3 align="center"><p > desea ir a otro lugar? </p> <br>
+			<form action="{{ url_for('busqueda',datos=usuario) }}" method="POST">
+				<input type="submit" name="boton" value="si">
+			</form>
+		</h3>
+		
+
+{% endblock%}
+<footer>
+	<p>aqui ira el correo donde pueden comunicarme</p>
+	</footer>
+</body>
+</html>

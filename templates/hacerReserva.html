@@ -1,0 +1,43 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">-->
+	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
+</head>
+<body background="http://www.hispaviacion.es/wp-content/uploads/2015/04/K66271-03.jpg">
+	<header align="center" id="header">
+	<div align="left">
+		<img src="imagenes/logotipo.jpg" alt="logotipo de gestor de vuelos" width="50">
+	</div>
+		<font size="20" face="roman"><span> Gestor de reservas</span></font>
+	</header> 
+		<hr />
+		<br><br>
+{% block body%}
+		
+	<h4><p>login {{datos.login}}</p></h4>
+		<font size="4" face="roman" ><p> realizar reserva </p></font>
+		<form action="{{ url_for('reservar',datos=datos,vuelos=vuelos) }}" method="POST">
+			{% for i in vuelos.mejor%}
+			<font size="3.5" face="roman" ><label for= "reservaV"> esta seguro de reservar el vuelo:
+			| aerolinea: {{i[0]}} 
+			| ciudad de salida: {{i[2]}}
+			| hora de salida: {{i[3]}}
+			| ciudad de llegada: {{i[4]}}
+			| hora de llegada: {{i[5]}}
+			</label></font>
+			{% endfor %}
+			<br></br>
+			<font size="3.5" face="roman" ><label for= "reserva1"> si </label></font>
+			<input type="radio" name="reserva" id="reserva1" value="si">  </input>
+			<br></br>
+				<input type="submit" name="boton" value="reservar">
+		</form>
+
+{% endblock%}
+<footer>
+	<p>aqui ira el correo donde pueden comunicarme</p>
+	</footer>
+</body>
+</html>

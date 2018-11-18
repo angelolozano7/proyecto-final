@@ -1,0 +1,56 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
+	<!--<link rel=stylesheet type=text/css href="{{ url_for('static', filename='estilo.css') }}">-->
+	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
+</head>
+<body background="http://www.hispaviacion.es/wp-content/uploads/2015/04/K66271-03.jpg">
+	<header align="center" id="header">
+	<div align="left">
+			<img src="imagenes/logotipo.jpg" alt="logotipo de gestor de vuelos" width="50">
+		</div>
+		<font size="20" face="roman"><span> Gestor de reservas</span></font>
+	</header> 
+	{% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <script>
+      		var messages = {{ messages | safe }};
+      		for (var i=0; i<messages.length; i++) {
+        		alert(messages[i]);
+      }
+    </script>
+         {% endif %}
+      {% endwith %}
+		<hr />
+		<br><br>
+{% block body%}
+		
+	<div align="center" id="validacion">
+	<font size="15" face="roman" ><p>Validacion de informacion </p></font>
+	<form action="{{ url_for('login') }}" method="POST">
+		<font size="5" face="roman" ><label for= "usuario"> ingrese su usuario </label></font>
+		<input type="text" placeholder="escriba su usuario" name="usuario" id="usuario">
+		<br><br>
+		<font size="5" face="roman" ><label for= "password"> ingrese su password </label></font>
+		<input type="password" placeholder="escriba su password" name="password" id="password"> 
+		<br><br>
+		<input type=submit name="boton" value="Ingresar">
+		<br><br>
+		
+	</form>
+	<form action= "{{ url_for('registro') }}" method="POST">
+			<input type=submit name="boton2" value="resgistrarse">
+
+	</form>
+	</div>
+		
+
+{% endblock%}
+	<footer>
+	<p>aqui ira el correo donde pueden comunicarme</p>
+	</footer>
+</body>
+
+
+</html>
