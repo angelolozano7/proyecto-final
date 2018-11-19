@@ -1,7 +1,3 @@
-
-# lo primero que debo hacer es abrir el archivo txt y guardar los datos
-#en listas que pueda utilizar
-
 from flask import Flask, request, g, redirect, url_for, render_template, flash, session
 import flask
 import sys
@@ -28,8 +24,8 @@ def abrirArchivo():
     """
     global apInformation, afInformation
     archivo= open(r"C:\Users\usuario\Desktop\Proyecto Programación\datos/datosVuelo.txt",mode="r+")
-    apInformation = archivo.readlines() #lista
-    afInformation = apInformation #lista
+    apInformation = archivo.readlines() 
+    afInformation = apInformation 
     apInformation=apInformation[13:36]
     afInformation=afInformation[59:len(afInformation)-1]
     i=0
@@ -74,7 +70,6 @@ def abrirArchivo():
 
     archivo.close()
 
-
 @app.route('/login',methods=['GET','POST'])
 def login():
     """
@@ -90,8 +85,6 @@ def login():
     
     for elem in lista:
         elem=ast.literal_eval(elem)
-        print(elem)
-        print(type(elem))
         elem=elem["login"]
         us.append(elem)
     lista.close()
@@ -189,6 +182,7 @@ def registrar():
                 auxD["password"]=request.form["passwordR"]
                 
                 return render_template('preferencias.html',datos=auxD)
+
 @app.route('/preferencias/<datos>',methods=['GET','POST'])
 def preferencias(datos):
     """
@@ -209,13 +203,13 @@ def preferencias(datos):
             datos["preferencias"]["comida"]=request.form.getlist('comida')
             datos["preferencias"]["clase"]=request.form.getlist('classe')
             archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
-            if archivo.readlines()==[]: # si el archvo esta vacio, no se hace salto de linea
-                archivo.write(str(datos))# como
+            if archivo.readlines()==[]: 
+                archivo.write(str(datos))
                 archivo.close()
                 flash("registrado exitosamente")
                 return redirect(url_for('main'))
             else:
-                archivo.write('\n'+str(datos))# aqui como ya hay uno, se hace salto para que quede un usuario por linea
+                archivo.write('\n'+str(datos))
                 archivo.close()
                 flash("registrado exitosamente")
                 return redirect(url_for('main'))
@@ -233,7 +227,6 @@ def preferencias(datos):
                 elem=str(elem).strip('\n')
                 lista[i]=elem
                 i+=1
-            print(lista)
             i=0
             for elem in lista:
                 elem= ast.literal_eval(elem)
@@ -243,7 +236,6 @@ def preferencias(datos):
                 else:
                     i+=1
             archivo.close()
-            #ingresar cada elemento de lista como una nueva linea excepto, primera que se agrega
             archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='w')
             i=0
             for dic in lista:
@@ -263,8 +255,6 @@ def preferencias(datos):
             flash("ha realizado los cambios de manera satisfactoria")
             return render_template('menu.html',usuario=datos)
 
-
-
 @app.route('/editarP/<datos>', methods=['GET','POST'])
 def editarP(datos):
     """
@@ -278,9 +268,17 @@ def editarP(datos):
 
 @app.route('/sugerencias/<datos>', methods=['GET','POST'])
 def sugerencia(datos):
+    """
+    En esta funcion se busca que con base a las preferencias del usuario
+    se le sugiero en lo posible uno o mas vuelos esto dependera de la exigencia
+    de las preferencias, ademas, se le ofreceran tres tipos de vuelos sugeridos.
+    entra: Un diccionario con todos los datos del usuario,incluyendo sus preferencias
+    hace: filtra todos los vuelos disponibles con base a las preferencias
+    sale: un diccionario con los vuelos sugeridos
+    """
     global apInformation, afInformation
     datos= ast.literal_eval(datos)
-    preferencia= datos["preferencias"] ## este es el motor de busqueda
+    preferencia= datos["preferencias"] 
     
     iPuerto=apInformation
     iVuelos= afInformation
@@ -358,27 +356,37 @@ def sugerencia(datos):
             if  preferencia["aerolinea"]=="" and preferencia["escalas"]=="" and  preferencia["horaSalida"]=="" and  preferencia["horaLlegada"]=="" and  preferencia["comida"]==[] and preferencia["clase"]==[]:
                 flash("no hay ningun sugerido con base a su preferencia")
                 return render_template('menu.html',usuario=datos)
-    print("mejorI",mejor)
-    print("regular",regular)
-    print("poco",poco)
-
-        
-    
+            
     sugeridos={"mejor":mejor,"regular":regular,"poco":poco}
     return render_template('vuelo.html',usuario=datos,vuelos=sugeridos)
 
-    
 @app.route('/busqueda/<datos>',methods=['GET','POST'])
 def busqueda(datos):
+    """
+    redirecciona a la pagina encargada de realizar busquedas de vuelos
+    segun el aeropuerto de salida y llegada
+    entra: un diccionario con los datos del usuario
+    sale: retorna a la pagina de html con los datos del usuario y la variable vuelos
+    """
     datos=ast.literal_eval(datos)
     return render_template('BusquedaVuelos.html',datos=datos,vuelos="")
 
 @app.route('/motor/<datos>', methods=['GET','POST'])
 def motor(datos):
+    """
+    En esta funcion se realiza la busqueda especifica de un usuario
+    en principio toma dos parametros los cuales son la ciudad de salida
+    y la ciudad de llegada. Sin embago, tambien se pueden añadir las preferencias
+    del usuario a la busqueda.
+    Posteriormente puede el usuario reservar directamente o ver el trayecto en el mapa.
+    entra: Los datos del usuario
+    hace: Filtra todos los vuelos con base a parametros especificos
+    sale: un diccionario con los vuelos que cumplen la condicion establecida
+    """
     global apInformation, afInformation
     datos= ast.literal_eval(datos)
-    abrirArchivo() #lo quita
-    preferencia= datos["preferencias"] ## este es el motor de busqueda
+    abrirArchivo() 
+    preferencia= datos["preferencias"] 
     iPuerto=apInformation
     iVuelos= afInformation
     mejor=[]
@@ -425,37 +433,57 @@ def motor(datos):
             else:
                 flash("no hay vuelos de una ciudad a ella misma")
                 return render_template('BusquedaVuelos.html',datos=datos,vuelos="")
+
 @app.route('/preReserva/<datos>/<vuelos>',methods=['GET','POST'])
 def preReserva(datos,vuelos):
+    """
+    Esta funcion esta diseñada con el proposito
+    de conectar una pagina con otra dependiendo 
+    de la peticion del usuario.
+    entra: dos diccionarios, uno con la informacion del usuario
+           y el otro con la informacion de los vuelos-
+    sale: redireciona con una pagina en especifico.
+    """
     if(request.method == 'POST'):
         if(request.form['boton'] == 'ver mapa'):
+            datos=ast.literal_eval(datos)
+            vuelos=ast.literal_eval(vuelos)
             return redirect(url_for('mapa',datos=datos,vuelos=vuelos))
         if(request.form['boton'] == 'hacer reserva'):
             datos=ast.literal_eval(datos)
             vuelos=ast.literal_eval(vuelos)
-            print(vuelos)
             mejor=[]
             for vuelo in vuelos["mejor"]:
                 if request.form["vuelo"]==vuelo[1]:
                     mejor.append(vuelo)
                     sugerencia={"mejor":mejor}
                     return render_template('hacerReserva.html',datos=datos,vuelos=sugerencia)
-        if(request.form['boton'] == 'hacer reservas'):
-            return render_template('hacerReserva.html',datos=datos,vuelos=vuelos)
+
 @app.route('/reservando/<datos>/<vuelos>',methods=['GET','POST'])   
 def reservar(datos,vuelos):
+    """
+    Esta funcion es la encargada de guardar
+    las reservas de cada usuario primero en 
+    los datos de dicho usuario y despues en
+    un archivo plano.
+    entra:dos diccionarios uno con la informacion
+    del usuario y otro con los datos de los vuelos.
+    hace: Verifica si el usuario ya ha tenido 
+          reservas previas, dependiendo del resultado
+          creara o actualizara dichas reservas.
+    sale: dos diccionarios uno con la informacion
+          actualizada del usuario y otro con los datos
+          de vuelo
+    """
     global afInformation
     datos=ast.literal_eval(datos)
     vuelos=ast.literal_eval(vuelos)
-    #print(vuelos)
-    #print(datos)
     mejor=[]
     if ("reservas" in datos):
         datos["reservas"]["aero"].append(vuelos["mejor"][0][0])
         datos["reservas"]["codigo"].append(vuelos["mejor"][0][1])
         datos["reservas"]["cSalida"].append(vuelos["mejor"][0][2])
         datos["reservas"]["cLlegada"].append(vuelos["mejor"][0][4])
-        print("final",datos)
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
         lista=archivo.readlines()
         i=0
@@ -472,7 +500,6 @@ def reservar(datos,vuelos):
             else:
                 i+=1
         archivo.close()
-        #ingresar cada elemento de lista como una nueva linea excepto, primera que se agrega
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='w')
         i=0
         for dic in lista:
@@ -496,8 +523,7 @@ def reservar(datos,vuelos):
         
         return render_template('reservas.html',datos=datos,vuelos=vuelos)
     else:
-        datos["reservas"]={"aero":[vuelos["mejor"][0][0]] ,"codigo":[vuelos["mejor"][0][1]],"cSalida":[vuelos["mejor"][0][2]] ,"cLlegada":[vuelos["mejor"][0][4]]} # en reservas solo se guarda el codigo del vuelo
-        print("final",datos,datos["reservas"])
+        datos["reservas"]={"aero":[vuelos["mejor"][0][0]] ,"codigo":[vuelos["mejor"][0][1]],"cSalida":[vuelos["mejor"][0][2]] ,"cLlegada":[vuelos["mejor"][0][4]]} 
         archivo= open(r'C:\Users\usuario\Desktop\Proyecto Programación\datos\datosUsuarios.txt', mode='r+')
         lista=archivo.readlines()
         i=0
@@ -505,7 +531,6 @@ def reservar(datos,vuelos):
             elem=str(elem).strip('\n')
             lista[i]=elem
             i+=1
-        print(lista)
         i=0
         for elem in lista:
             elem= ast.literal_eval(elem)
@@ -534,18 +559,21 @@ def reservar(datos,vuelos):
                     mejor.append(vuelo)
             i+=1
         vuelos["mejor"]=mejor
-        print("vuelos fin ",vuelos)
         return render_template('reservas.html',datos=datos,vuelos=vuelos)
-
-                        
-
-
-
-
-
 
 @app.route('/historial/<datos>',methods=['GET','POST'])
 def historial(datos):
+    """
+    Esta funcion le mostrara al usuario las reservas
+    que ha realizado hasta el momento, dandole la
+    opcion de hacer un reserva nueva o de salir
+    de la aplicacion.
+    entra: Un diccionario con la informacion
+           del usuario.
+    hace: Muestra las reservas de dicho usuario.
+    sale: Redireciona al usuario segun sus
+          peticiones.
+    """
     global afInformation
     datos=ast.literal_eval(datos)
     mejor=[]
@@ -566,112 +594,149 @@ def historial(datos):
         
 @app.route('/mapa/<datos>/<vuelos>',methods=['GET','POST'])
 def mapa(datos,vuelos):
+    """
+    Esta funcion se encarga de ayudar
+    visualmente al usuario sobre la
+    trayectoria del vuelo en cuestion,
+    mostrando incialmente la ciudad
+    de salida y posteriormente, la 
+    ciduad de destino.
+
+    entra: Dos diccionarios uno con la
+           informacion del usuario y otro 
+           con la informacion de los vuelos.
+    hace: Consigue las coordenadas de las ciudades.
+
+    sale: Tres diccionarios uno con la informacion
+          del usuario, otro con la imnformacion de
+          los vuelos y por ultimo las coordenadas
+          de las ciudades.
+    """
     global apInformation
     datos=ast.literal_eval(datos)
     vuelos=ast.literal_eval(vuelos)
-    if(request.form['boton'] == 'mas informacion'):
-        if len(vuelos)>1:
-            mejor= vuelos["mejor"] #if != [] => es una lista de listas
+    if(request.method == 'POST'):
+        if(request.form['boton'] == "mas informacion"):
+            if len(vuelos)>1:
+                mejor= vuelos["mejor"] 
+                regular= vuelos["regular"]
+                poco= vuelos["poco"]
+                ciudades={"ABQ":[460,420],"ATL":[1100,471],"BNA":[1019,407],"BOS":[1396,160],"DCA":[1272,285],"DEN":[522,300],"DFW":[745,512],"DTW":[1088,210],"HOU":[780,597],"JFK":[1332,220],"LAX":[135,407],"MIA":[1257,673],"MSP":[823,142],"MSY":[937,592],"ORD":[975,236],"PHL":[1312,250],"PHX":[300,447],"PVD":[1390,80],"RDU":[1243,380],"SEA":[145,7],"SFO":[40,280],"STL":[910,337],"TPA":[1172,623]}
+                dibujoL=[]
+                dibujoD={"xInicial":"","yInicial":"","xFinal":"","yFinal":""}
+                codigo=""
+                codigo=request.form["vuelo"]
+                        
+                if mejor!=[]:
+                    i=0
+                    for vuelo in mejor:
+                      
+                        if codigo== mejor[i][1]:
+                            dibujoL=vuelo
+                            break
+                        i+=1
+                if regular!=[]:     
+                    i=0   
+                    for vuelo in regular:
+                       
+                        if codigo== regular[i][1]:
+                            dibujoL=vuelo
+                            break
+                        i+=1
+                if poco!=[]:
+                    i=0
+                    for vuelo in poco:
+                       
+                        if codigo== poco[i][1]:
+                            dibujoL=vuelo
+                            break
+                        i+=1
+                for puerto in ciudades:        
+                    if dibujoL[2]==puerto:
+                        dibujoD["xInicial"]=ciudades[puerto][0]
+                        dibujoD["yInicial"]=ciudades[puerto][1]
+                        break
+               
+                for puerto in ciudades:
+                    if dibujoL[4]==puerto:
+                        dibujoD["xFinal"]=ciudades[puerto][0]
+                        dibujoD["yFinal"]=ciudades[puerto][1]
+                        break
+                      
+                mejor=dibujoL
+                vuelos={"mejor":[mejor]}    
+                return render_template('mapa.html',datosDibujo=dibujoD,datos=datos,vuelos=vuelos)
+            else:
+                dibujoL=vuelos["mejor"][0]
+                ciudades={"ABQ":[460,420],"ATL":[1100,471],"BNA":[1019,407],"BOS":[1396,160],"DCA":[1272,285],"DEN":[522,300],"DFW":[745,512],"DTW":[1088,210],"HOU":[780,597],"JFK":[1332,220],"LAX":[135,407],"MIA":[1257,673],"MSP":[823,142],"MSY":[937,592],"ORD":[975,236],"PHL":[1312,250],"PHX":[300,447],"PVD":[1390,80],"RDU":[1243,380],"SEA":[145,7],"SFO":[40,280],"STL":[910,337],"TPA":[1172,623]}
+                dibujoD={"xInicial":"","yInicial":"","xFinal":"","yFinal":""}
+                codigo=dibujoL[1]
+                for puerto in ciudades:        
+                    if dibujoL[2]==puerto:
+                        dibujoD["xInicial"]=ciudades[puerto][0]
+                        dibujoD["yInicial"]=ciudades[puerto][1]
+                        break
+                       
+                for puerto in ciudades:
+                    if dibujoL[4]==puerto:
+                        dibujoD["xFinal"]=ciudades[puerto][0]
+                        dibujoD["yFinal"]=ciudades[puerto][1]
+                        break
+                mejor=dibujoL
+                vuelos={"mejor":[mejor]}    
+                return render_template('mapa.html',datosDibujo=dibujoD,datos=datos,vuelos=vuelos)
+        else:
+            mejor= vuelos["mejor"] 
             regular= vuelos["regular"]
             poco= vuelos["poco"]
-            ciudades={"ABQ":[460,420],"ATL":[1100,471],"BNA":[1019,407],"BOS":[1396,160],"DCA":[1272,285],"DEN":[522,300],"DFW":[745,512],"DTW":[1088,210],"HOU":[780,597],"JFK":[1332,220],"LAX":[135,407],"MIA":[1257,673],"MSP":[823,142],"MSY":[937,592],"ORD":[975,236],"PHL":[1312,250],"PHX":[300,447],"PVD":[1390,80],"RDU":[1243,380],"SEA":[145,7],"SFO":[40,280],"STL":[910,337],"TPA":[1172,623]}
-            dibujoL=[]
-            dibujoD={"xInicial":"","yInicial":"","xFinal":"","yFinal":""}
-            codigo=""
-            if(request.method == 'POST'):
-                if(request.form['boton'] == 'mas informacion'):
-                    codigo=request.form["vuelo"]
-                    
-                    if mejor!=[]:
-                        i=0
-                        for vuelo in mejor:
-                          
-                            if codigo== mejor[i][1]:
-                                dibujoL=vuelo
-                                break
-                            i+=1
-                    if regular!=[]:     
-                        i=0   
-                        for vuelo in regular:
-                           
-                            if codigo== regular[i][1]:
-                                dibujoL=vuelo
-                                break
-                            i+=1
-                    if poco!=[]:
-                        i=0
-                        for vuelo in poco:
-                           
-                            if codigo== poco[i][1]:
-                                dibujoL=vuelo
-                                break
-                            i+=1
-                    for puerto in ciudades:        
-                        if dibujoL[2]==puerto:
-                            dibujoD["xInicial"]=ciudades[puerto][0]
-                            dibujoD["yInicial"]=ciudades[puerto][1]
-                            break
-                   
-                    for puerto in ciudades:
-                        if dibujoL[4]==puerto:
-                            dibujoD["xFinal"]=ciudades[puerto][0]
-                            dibujoD["yFinal"]=ciudades[puerto][1]
-                            break
-                  
+            codigo=request.form["vuelo"]
+            if mejor!=[]:
+                i=0
+                for vuelo in mejor:
+                              
+                    if codigo== mejor[i][1]:
+                        dibujoL=vuelo
+                        break
+                    i+=1
+            if regular!=[]:     
+                i=0   
+                for vuelo in regular:
+                               
+                    if codigo== regular[i][1]:
+                        dibujoL=vuelo
+                        break
+                    i+=1
+            if poco!=[]:
+                i=0
+                for vuelo in poco:
+                               
+                    if codigo== poco[i][1]:
+                        dibujoL=vuelo
+                        break
+                    i+=1
             mejor=dibujoL
-            vuelos={"mejor":mejor}    
-            return render_template('mapa.html',datosDibujo=dibujoD,datos=datos,vuelos=vuelos)
-        else:
-            dibujoL=vuelos["mejor"][0]
-            ciudades={"ABQ":[460,420],"ATL":[1100,471],"BNA":[1019,407],"BOS":[1396,160],"DCA":[1272,285],"DEN":[522,300],"DFW":[745,512],"DTW":[1088,210],"HOU":[780,597],"JFK":[1332,220],"LAX":[135,407],"MIA":[1257,673],"MSP":[823,142],"MSY":[937,592],"ORD":[975,236],"PHL":[1312,250],"PHX":[300,447],"PVD":[1390,80],"RDU":[1243,380],"SEA":[145,7],"SFO":[40,280],"STL":[910,337],"TPA":[1172,623]}
-            dibujoD={"xInicial":"","yInicial":"","xFinal":"","yFinal":""}
-            codigo=dibujoL[1]
-            for puerto in ciudades:        
-                if dibujoL[2]==puerto:
-                    dibujoD["xInicial"]=ciudades[puerto][0]
-                    dibujoD["yInicial"]=ciudades[puerto][1]
-                    break
-                   
-            for puerto in ciudades:
-                if dibujoL[4]==puerto:
-                    dibujoD["xFinal"]=ciudades[puerto][0]
-                    dibujoD["yFinal"]=ciudades[puerto][1]
-                    break
-            mejor=dibujoL
-            vuelos={"mejor":mejor}    
-            return render_template('mapa.html',datosDibujo=dibujoD,datos=datos,vuelos=vuelos)
+            vuelos={"mejor":[mejor]}
+            return render_template('hacerReserva.html',datos=datos,vuelos=vuelos)
     else:
-        mejor= vuelos["mejor"] #if != [] => es una lista de listas
-        regular= vuelos["regular"]
-        poco= vuelos["poco"]
-        codigo=request.form["vuelo"]
-        if mejor!=[]:
-            i=0
-            for vuelo in mejor:
-                          
-                if codigo== mejor[i][1]:
-                    dibujoL=vuelo
-                    break
-                i+=1
-        if regular!=[]:     
-            i=0   
-            for vuelo in regular:
-                           
-                if codigo== regular[i][1]:
-                    dibujoL=vuelo
-                    break
-                i+=1
-        if poco!=[]:
-            i=0
-            for vuelo in poco:
-                           
-                if codigo== poco[i][1]:
-                    dibujoL=vuelo
-                    break
-                i+=1
+        dibujoL=vuelos["mejor"][0]
+        ciudades={"ABQ":[460,420],"ATL":[1100,471],"BNA":[1019,407],"BOS":[1396,160],"DCA":[1272,285],"DEN":[522,300],"DFW":[745,512],"DTW":[1088,210],"HOU":[780,597],"JFK":[1332,220],"LAX":[135,407],"MIA":[1257,673],"MSP":[823,142],"MSY":[937,592],"ORD":[975,236],"PHL":[1312,250],"PHX":[300,447],"PVD":[1390,80],"RDU":[1243,380],"SEA":[145,7],"SFO":[40,280],"STL":[910,337],"TPA":[1172,623]}
+        dibujoD={"xInicial":"","yInicial":"","xFinal":"","yFinal":""}
+        codigo=dibujoL[1]
+        for puerto in ciudades:        
+            if dibujoL[2]==puerto:
+                dibujoD["xInicial"]=ciudades[puerto][0]
+                dibujoD["yInicial"]=ciudades[puerto][1]
+                break
+               
+        for puerto in ciudades:
+            if dibujoL[4]==puerto:
+                dibujoD["xFinal"]=ciudades[puerto][0]
+                dibujoD["yFinal"]=ciudades[puerto][1]
+                break
         mejor=dibujoL
-        vuelos={"mejor":[mejor]}
-        return render_template('hacerReserva.html',datos=datos,vuelos=vuelos)
+        vuelos={"mejor":[mejor]}    
+        return render_template('mapa.html',datosDibujo=dibujoD,datos=datos,vuelos=vuelos)
+
 
 
 
@@ -681,6 +746,14 @@ def mapa(datos,vuelos):
 
 @app.route('/',methods=['GET','POST'])
 def main():
+    """
+    Esta es la funcion principal de la aplicacion,
+    en la cual se lee el archivo que contiene la
+    informacion de los aeropuertos y los vuelos.
+    hace: Obtiene informacion de un fichero
+    sale: direcciona hacia la primer pagina de
+          la aplicacion.
+    """
     abrirArchivo()
 
     return render_template('main.html')
@@ -690,8 +763,7 @@ def main():
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
-    # faltan mostrar las sugenrencias e iniciar con el algoritmo de reserva, segun caractersiticas.
-    # ademas toca implementar el mapa y sale!
+  
 
 
     
