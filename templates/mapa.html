@@ -1,17 +1,42 @@
 <html>
 
-<head>
-	<meta charset="utf-8">
+	<head>
+		<title> Gestor de reservas </title>
+		<style>
+        	#mapa {
+            	background: url(https://www.viajejet.com/wp-content/viajes/mapa-fisico-estados-unidos.jpg);
+            	background-repeat: no-repeat;
+            	background-size:  100% 100%;
+                
+        	}
+            
+        	@keyframes animacion{
+            	from {top: {{ datosDibujo.yInicial }}px; left: {{ datosDibujo.xInicial }}px ;}
+            	to {top:{{ datosDibujo.yFinal }}px; left: {{ datosDibujo.xFinal }}px;}
+       		}
+            
+        	div {
+            	width: 25px;
+            	height: 25px;
+				position: relative;
+            	background-image: url(https://st2.depositphotos.com/1006689/10060/v/950/depositphotos_100600764-stock-illustration-airplane-flying-vector-icon.jpg);
+            	background-size: 100%;
+            	animation-name: animacion;
+            	animation-duration: 7s;
+				animation-fill-mode: forwards;
+        	}
+    	</style>
+	</head>
+	
+	<body id="mapa">
+        <div></div>
 
-	<link rel="stylesheet" type="text/css" href=" ':/static/style.css">
-
-	<font size="20" face="roman" ><title> Gestor de reservas </title></font>
-	<link rel="icon" type="images\favicon" href="https://banner2.kisspng.com/20180326/eqq/kisspng-google-flights-airline-ticket-hotel-travel-5ab971a3ef4902.0753485715221026919801.jpg">
-	<style type="text/css">
-		
-	</style>
-</head>
-
-{% block body%}
-<p>{{datosDibujo}}</p>
-{% endblock%}
+    </body>
+    {%block footer%}
+    <footer>
+    <form action="{{ url_for('sugerencia',datos=datos)}} "method="POST">
+    	<input type="submit" name="boton" style="Position:Absolute; left:90%; top:80%;width:130px; height:50px"  value="Volver">
+    </form>
+    </footer>
+    {%endblock%}
+</html>
