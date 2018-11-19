@@ -1,7 +1,0 @@
-para que las librerias
-
-html: con html se crearan las paginas web con las cuales interactuara nuestro programa y nuestro usuario.
-css: css se encargara de la parte estetica de cada una de nuestras paginas html,haciendo asi que sean mas amigables para el usuario a la hora de interpretar la informacion que presenta nuestro programa.
-flask: esta libreria de python servira como intermediario entre html y python. Direccionando a nuestro servidor entre uno y el otro, ademas, en algunos casos realizando operaciones directamente en el codigo html.
-python: sera el motor logico del programa, en este estaran definidas todas las funciones que ayudaran a flask a saber como direccionar el servidor y sera el puente entre los archivos de informacion previa y la informacion nueva que pueda ser obtenida por la ejecucion del programa.
-
